@@ -1,0 +1,297 @@
+gametitle=Gran Turismo 3 A-Spec [SCPS-15009]
+
+// GT3 lamp / track-light / sun flare performance patch. Same sections and controls as the GT4 version.
+// FILE NAME: PCSX2 only loads this if the name is <serial>_<CRC>.pnach. This file is named for SCPS-15009 (see note in chat).
+//   Rename the XXXXXXXX part to the CRC PCSX2 shows for your disc (game properties, or the CRC in the emulog on boot).
+// Every patch address and original instruction was checked against the decompressed CORE.GT3.
+// Address -> file offset in the unpacked image: offset = address - 0x100000 + 0x114.
+// Not runtime-tested in PCSX2: enable one section at a time.
+//
+// ALTERNATIVE GROUPS - enable at most ONE section from each group (members write the same addresses):
+//   Flare Cap 4 / 6 / 8 / 12 / 16 / 20 / 24 / 32
+//   Flare Distance Cull 25 / 40 / 60 / 80 / 100
+//   Flare Glow Large / Medium / Small / Tiny
+//   Sun Flare Half / Quarter / Eighth Size / Off
+// INDEPENDENT (can be combined with anything): Flare Halo Pass Off, Streak Lights Off.
+// "Lamp Flares Off (Max Speed)" makes the caps, culls, glow and halo sections pointless; use it on its own.
+// Cull, Glow and Sun sections use 13 words of the 14-word zero padding at 0x0028C148 (right after the last function,
+// before a data table) for stub code. They use separate words, so they can be combined with each other.
+
+[Flare Cap 4]
+description=Max 4 lamp flares and 4 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x04 = 4.
+patch=1,EE,20199484,extended,28A20004
+patch=1,EE,20199E38,extended,28620004
+
+[Flare Cap 6]
+description=Max 6 lamp flares and 6 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x06 = 6.
+patch=1,EE,20199484,extended,28A20006
+patch=1,EE,20199E38,extended,28620006
+
+[Flare Cap 8]
+description=Max 8 lamp flares and 8 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x08 = 8.
+patch=1,EE,20199484,extended,28A20008
+patch=1,EE,20199E38,extended,28620008
+
+[Flare Cap 12]
+description=Max 12 lamp flares and 12 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x0C = 12.
+patch=1,EE,20199484,extended,28A2000C
+patch=1,EE,20199E38,extended,2862000C
+
+[Flare Cap 16]
+description=Max 16 lamp flares and 16 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x10 = 16.
+patch=1,EE,20199484,extended,28A20010
+patch=1,EE,20199E38,extended,28620010
+
+[Flare Cap 20]
+description=Max 20 lamp flares and 20 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x14 = 20.
+patch=1,EE,20199484,extended,28A20014
+patch=1,EE,20199E38,extended,28620014
+
+[Flare Cap 24]
+description=Max 24 lamp flares and 24 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x18 = 24.
+patch=1,EE,20199484,extended,28A20018
+patch=1,EE,20199E38,extended,28620018
+
+[Flare Cap 32]
+description=Max 32 lamp flares and 32 track-light flares queued per frame (game default 100).
+author=Generated from disassembly of CORE.GT3
+
+// Last hex digits are the cap: 0x20 = 32.
+patch=1,EE,20199484,extended,28A20020
+patch=1,EE,20199E38,extended,28620020
+
+[Flare Distance Cull 25]
+description=Skips lamp/track-light flares farther than ~25 units from the camera. Higher = more flares drawn = more taxing.
+author=Generated from disassembly of CORE.GT3
+
+// Both queues (0x00199458 track lights, 0x00199E00 car lamps) call one visibility test (0x00199580). Its final "jr ra"
+// (0x001996AC) is redirected to a stub in padding that treats the flare as not visible when the view distance is above a
+// threshold. The distance is the float that the test stores at 8(a2). Positive floats compare correctly as unsigned integers,
+// so the stub is just: lw t0,8(a2) / lui t1,thr / sltu t0,t1,t0 / jr ra / movn v0,zero,t0 (delay slot).
+// The threshold is the float set by "lui t1,0x41C8" (0x41C80000 = 25.0). GT3 world scale is not verified, so tune this by eye.
+patch=1,EE,201996AC,extended,080A3052
+patch=1,EE,2028C148,extended,8CC80008
+patch=1,EE,2028C14C,extended,3C0941C8
+patch=1,EE,2028C150,extended,0128402B
+patch=1,EE,2028C154,extended,03E00008
+patch=1,EE,2028C158,extended,0008100B
+
+[Flare Distance Cull 40]
+description=Skips lamp/track-light flares farther than ~40 units from the camera. Higher = more flares drawn = more taxing.
+author=Generated from disassembly of CORE.GT3
+
+// Both queues (0x00199458 track lights, 0x00199E00 car lamps) call one visibility test (0x00199580). Its final "jr ra"
+// (0x001996AC) is redirected to a stub in padding that treats the flare as not visible when the view distance is above a
+// threshold. The distance is the float that the test stores at 8(a2). Positive floats compare correctly as unsigned integers,
+// so the stub is just: lw t0,8(a2) / lui t1,thr / sltu t0,t1,t0 / jr ra / movn v0,zero,t0 (delay slot).
+// The threshold is the float set by "lui t1,0x4220" (0x42200000 = 40.0). GT3 world scale is not verified, so tune this by eye.
+patch=1,EE,201996AC,extended,080A3052
+patch=1,EE,2028C148,extended,8CC80008
+patch=1,EE,2028C14C,extended,3C094220
+patch=1,EE,2028C150,extended,0128402B
+patch=1,EE,2028C154,extended,03E00008
+patch=1,EE,2028C158,extended,0008100B
+
+[Flare Distance Cull 60]
+description=Skips lamp/track-light flares farther than ~60 units from the camera. Higher = more flares drawn = more taxing.
+author=Generated from disassembly of CORE.GT3
+
+// Both queues (0x00199458 track lights, 0x00199E00 car lamps) call one visibility test (0x00199580). Its final "jr ra"
+// (0x001996AC) is redirected to a stub in padding that treats the flare as not visible when the view distance is above a
+// threshold. The distance is the float that the test stores at 8(a2). Positive floats compare correctly as unsigned integers,
+// so the stub is just: lw t0,8(a2) / lui t1,thr / sltu t0,t1,t0 / jr ra / movn v0,zero,t0 (delay slot).
+// The threshold is the float set by "lui t1,0x4270" (0x42700000 = 60.0). GT3 world scale is not verified, so tune this by eye.
+patch=1,EE,201996AC,extended,080A3052
+patch=1,EE,2028C148,extended,8CC80008
+patch=1,EE,2028C14C,extended,3C094270
+patch=1,EE,2028C150,extended,0128402B
+patch=1,EE,2028C154,extended,03E00008
+patch=1,EE,2028C158,extended,0008100B
+
+[Flare Distance Cull 80]
+description=Skips lamp/track-light flares farther than ~80 units from the camera. Higher = more flares drawn = more taxing.
+author=Generated from disassembly of CORE.GT3
+
+// Both queues (0x00199458 track lights, 0x00199E00 car lamps) call one visibility test (0x00199580). Its final "jr ra"
+// (0x001996AC) is redirected to a stub in padding that treats the flare as not visible when the view distance is above a
+// threshold. The distance is the float that the test stores at 8(a2). Positive floats compare correctly as unsigned integers,
+// so the stub is just: lw t0,8(a2) / lui t1,thr / sltu t0,t1,t0 / jr ra / movn v0,zero,t0 (delay slot).
+// The threshold is the float set by "lui t1,0x42A0" (0x42A00000 = 80.0). GT3 world scale is not verified, so tune this by eye.
+patch=1,EE,201996AC,extended,080A3052
+patch=1,EE,2028C148,extended,8CC80008
+patch=1,EE,2028C14C,extended,3C0942A0
+patch=1,EE,2028C150,extended,0128402B
+patch=1,EE,2028C154,extended,03E00008
+patch=1,EE,2028C158,extended,0008100B
+
+[Flare Distance Cull 100]
+description=Skips lamp/track-light flares farther than ~100 units from the camera. Higher = more flares drawn = more taxing.
+author=Generated from disassembly of CORE.GT3
+
+// Both queues (0x00199458 track lights, 0x00199E00 car lamps) call one visibility test (0x00199580). Its final "jr ra"
+// (0x001996AC) is redirected to a stub in padding that treats the flare as not visible when the view distance is above a
+// threshold. The distance is the float that the test stores at 8(a2). Positive floats compare correctly as unsigned integers,
+// so the stub is just: lw t0,8(a2) / lui t1,thr / sltu t0,t1,t0 / jr ra / movn v0,zero,t0 (delay slot).
+// The threshold is the float set by "lui t1,0x42C8" (0x42C80000 = 100.0). GT3 world scale is not verified, so tune this by eye.
+patch=1,EE,201996AC,extended,080A3052
+patch=1,EE,2028C148,extended,8CC80008
+patch=1,EE,2028C14C,extended,3C0942C8
+patch=1,EE,2028C150,extended,0128402B
+patch=1,EE,2028C154,extended,03E00008
+patch=1,EE,2028C158,extended,0008100B
+
+[Flare Halo Pass Off]
+description=Removes the second, larger halo sprite that lamp and track-light flares draw when close to the camera.
+author=Generated from disassembly of CORE.GT3
+
+// The flare draw function 0x00244990 (same code as GT4's 0x00498198) draws the main glow, then a second bigger halo
+// sprite when the light is closer than a set range (it sets s5=1 in a branch delay slot at 0x00244A38).
+// Setting s5 to 0 there skips that second draw entirely. Nearby lights still glow, but without the big halo.
+patch=1,EE,20244A38,extended,24150000
+
+[Flare Glow Large]
+description=Draws every lamp/track-light glow at 75% width and height (about 56% of the screen area). Same lights, same colours, less GPU overdraw.
+author=Generated from disassembly of CORE.GT3
+
+// In the flare draw function 0x00244990, "mov.s f25,f17" at 0x002449D8 copies the main glow size.
+// It is replaced by a jump to a stub in padding (0x0028C15C) that stores size * 0.75 in f25 (the multiply sits in the jump's
+// delay slot), then returns to 0x002449E0. The original delay slot (0x002449DC, swc1 f23,0x88(sp)) still runs, so nothing is
+// skipped. f0 and at are free at that point.
+// Original word at 0x002449D8: 46008E46. Constant 0x3F40 = 0.75.
+patch=1,EE,202449D8,extended,080A3057
+patch=1,EE,2028C15C,extended,3C013F40
+patch=1,EE,2028C160,extended,44810000
+patch=1,EE,2028C164,extended,08091278
+patch=1,EE,2028C168,extended,46008E42
+
+[Flare Glow Medium]
+description=Draws every lamp/track-light glow at 50% width and height (about 25% of the screen area). Same lights, same colours, less GPU overdraw.
+author=Generated from disassembly of CORE.GT3
+
+// In the flare draw function 0x00244990, "mov.s f25,f17" at 0x002449D8 copies the main glow size.
+// It is replaced by a jump to a stub in padding (0x0028C15C) that stores size * 0.5 in f25 (the multiply sits in the jump's
+// delay slot), then returns to 0x002449E0. The original delay slot (0x002449DC, swc1 f23,0x88(sp)) still runs, so nothing is
+// skipped. f0 and at are free at that point.
+// Original word at 0x002449D8: 46008E46. Constant 0x3F00 = 0.5.
+patch=1,EE,202449D8,extended,080A3057
+patch=1,EE,2028C15C,extended,3C013F00
+patch=1,EE,2028C160,extended,44810000
+patch=1,EE,2028C164,extended,08091278
+patch=1,EE,2028C168,extended,46008E42
+
+[Flare Glow Small]
+description=Draws every lamp/track-light glow at 25% width and height (about 6% of the screen area). Same lights, same colours, less GPU overdraw.
+author=Generated from disassembly of CORE.GT3
+
+// In the flare draw function 0x00244990, "mov.s f25,f17" at 0x002449D8 copies the main glow size.
+// It is replaced by a jump to a stub in padding (0x0028C15C) that stores size * 0.25 in f25 (the multiply sits in the jump's
+// delay slot), then returns to 0x002449E0. The original delay slot (0x002449DC, swc1 f23,0x88(sp)) still runs, so nothing is
+// skipped. f0 and at are free at that point.
+// Original word at 0x002449D8: 46008E46. Constant 0x3E80 = 0.25.
+patch=1,EE,202449D8,extended,080A3057
+patch=1,EE,2028C15C,extended,3C013E80
+patch=1,EE,2028C160,extended,44810000
+patch=1,EE,2028C164,extended,08091278
+patch=1,EE,2028C168,extended,46008E42
+
+[Flare Glow Tiny]
+description=Draws every lamp/track-light glow at 12.5% width and height (about 1.6% of the screen area). Same lights, same colours, less GPU overdraw.
+author=Generated from disassembly of CORE.GT3
+
+// In the flare draw function 0x00244990, "mov.s f25,f17" at 0x002449D8 copies the main glow size.
+// It is replaced by a jump to a stub in padding (0x0028C15C) that stores size * 0.125 in f25 (the multiply sits in the jump's
+// delay slot), then returns to 0x002449E0. The original delay slot (0x002449DC, swc1 f23,0x88(sp)) still runs, so nothing is
+// skipped. f0 and at are free at that point.
+// Original word at 0x002449D8: 46008E46. Constant 0x3E00 = 0.125.
+patch=1,EE,202449D8,extended,080A3057
+patch=1,EE,2028C15C,extended,3C013E00
+patch=1,EE,2028C160,extended,44810000
+patch=1,EE,2028C164,extended,08091278
+patch=1,EE,2028C168,extended,46008E42
+
+[Sun Flare Half Size]
+description=Draws the sun flare at 50% width and height instead of full size.
+author=Generated from disassembly of CORE.GT3
+
+// The sun flare draw call at 0x0019A298 (jal 0x00244E00) is redirected to a stub in padding (0x0028C16C) that
+// multiplies the size argument (f12) by 0.5 and then jumps to the original draw function.
+// Constant 0x3F00 = 0.5. Enable only one Sun Flare section.
+patch=1,EE,2019A298,extended,0C0A305B
+patch=1,EE,2028C16C,extended,3C013F00
+patch=1,EE,2028C170,extended,44810800
+patch=1,EE,2028C174,extended,08091380
+patch=1,EE,2028C178,extended,46016302
+
+[Sun Flare Quarter Size]
+description=Draws the sun flare at 25% width and height instead of full size.
+author=Generated from disassembly of CORE.GT3
+
+// The sun flare draw call at 0x0019A298 (jal 0x00244E00) is redirected to a stub in padding (0x0028C16C) that
+// multiplies the size argument (f12) by 0.25 and then jumps to the original draw function.
+// Constant 0x3E80 = 0.25. Enable only one Sun Flare section.
+patch=1,EE,2019A298,extended,0C0A305B
+patch=1,EE,2028C16C,extended,3C013E80
+patch=1,EE,2028C170,extended,44810800
+patch=1,EE,2028C174,extended,08091380
+patch=1,EE,2028C178,extended,46016302
+
+[Sun Flare Eighth Size]
+description=Draws the sun flare at 12.5% width and height instead of full size.
+author=Generated from disassembly of CORE.GT3
+
+// The sun flare draw call at 0x0019A298 (jal 0x00244E00) is redirected to a stub in padding (0x0028C16C) that
+// multiplies the size argument (f12) by 0.125 and then jumps to the original draw function.
+// Constant 0x3E00 = 0.125. Enable only one Sun Flare section.
+patch=1,EE,2019A298,extended,0C0A305B
+patch=1,EE,2028C16C,extended,3C013E00
+patch=1,EE,2028C170,extended,44810800
+patch=1,EE,2028C174,extended,08091380
+patch=1,EE,2028C178,extended,46016302
+
+[Sun Flare Off]
+description=Removes the sun flare draw call completely. Do not combine with the other Sun Flare sections.
+author=Generated from disassembly of CORE.GT3
+
+// Replaces the "jal 0x00244E00" at 0x0019A298 with a nop (original word: 0C091380).
+patch=1,EE,2019A298,extended,00000000
+
+[Streak Lights Off]
+description=Turns off the second flare draw function (streak/line-type lights). Independent of the cap, cull and glow sections.
+author=Generated from disassembly of CORE.GT3
+
+// Function 0x00244B98 is called from 0x0019A410. Its first instruction becomes "jr ra". The delay slot is also
+// nop'd because the original (sd s2,0x60(sp)) would write into the caller's stack before sp is adjusted.
+// Original words: 27BDFF50 / FFB20060.
+patch=1,EE,20244B98,extended,03E00008
+patch=1,EE,20244B9C,extended,00000000
+
+[Lamp Flares Off (Max Speed)]
+description=Turns off ALL lamp and track-light flare drawing. Biggest speedup, but lights lose their glow. Use on its own.
+author=Generated from disassembly of CORE.GT3
+
+// Function 0x00244990 is called once per queued flare from 0x0019A454 (car lamps) and 0x0019A598 (track lights).
+// Its first instruction becomes "jr ra" and its delay slot a nop, so it returns before touching the stack or GS state.
+// Original words: 27BDFF50 / 44801000.
+patch=1,EE,20244990,extended,03E00008
+patch=1,EE,20244994,extended,00000000
