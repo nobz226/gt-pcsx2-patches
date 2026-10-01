@@ -2,8 +2,7 @@
 
 Toggleable patches that reduce the cost of light flares in **Gran Turismo 4 (US, SCUS-97328)** on PCSX2, mainly on evening and night tracks.
 
-> **Status: untested.** Every patch address and original instruction was checked against a decompressed copy of the game's `CORE.GT4`, but the patches have not been run in PCSX2. Try one section at a time and keep a backup of your save. If something misbehaves, turn the patch off and the game returns to normal.
-
+>
 ---
 
 ## What is in this package
@@ -15,14 +14,8 @@ Toggleable patches that reduce the cost of light flares in **Gran Turismo 4 (US,
 
 ## Before you start: check that it fits your game
 
-This patch is for the **US release, serial SCUS-97328**, with the `CORE.GT4` file it was checked against. It will **not** work on other regions, on Spec II / Online Beta (SCUS-97436), or on a modified game.
+This patch is for the **US release, serial SCUS-97328**. It will **not** work on other regions, on Spec II / Online Beta (SCUS-97436), or on a modified game.
 
-1. Start GT4 in PCSX2 once.
-2. Open the log (**Tools → Show Log**, or **Settings → Advanced → enable Log Window**) or look at the game list entry.
-3. Find the game's **serial** and **CRC**. You need `SCUS-97328` and an 8-character CRC.
-4. If your CRC is **`77E61C8A`**, the file name is already correct. If it is **different**, rename the `.pnach` file to `SCUS-97328_<YOUR CRC>.pnach` (uppercase, no spaces). The patch is tied to the addresses in the US `CORE.GT4`, so only do this if you are sure your disc is the standard US GT4.
-
----
 
 ## Step 1: Install the patch (pick ONE method)
 
